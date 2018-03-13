@@ -1,0 +1,208 @@
+boundary: '#'
+lexicon: turkish.lex
+defaults: "a b c <c,> d e f g <g> h <i> i j k l m n o <o..> p r s <s,> t u <u..> v y z +:0 #"
+subsets:
+  "VOICELESS": "<c,> f h k p s <s,> t"
+  "CONS": "b c <c,> d f g <g> h j k l m n p r s <s,> t v y z D Y C G"
+  "VOWEL": "a e i <i> o <o..> u <u..>"
+  "BACKROUND": "o u"
+  "BACKUNROUND": "a <i>"
+  "FRONTROUND": "<o..> <u..>"
+  "FRONTUNROUND": "e i"
+  "@": "a b c <c,> d e f g <g> h <i> i j k l m n o <o..> p r s <s,> t u <u..> v y z + D Y C G E I # 0"
+
+rules:
+  vowel harmony:
+    start: 
+      'FRONTUNROUND:FRONTUNROUND': frontunroundseen
+      'FRONTROUND:FRONTROUND': frontroundseen
+      'BACKUNROUND:BACKUNROUND': backunroundseen
+      'BACKROUND:BACKROUND': backroundseen
+      '@:@': start
+      '#:#': start
+    frontunroundseen:
+      'FRONTUNROUND:FRONTUNROUND': frontunroundseen
+      'FRONTROUND:FRONTROUND': frontroundseen
+      'BACKUNROUND:BACKUNROUND': backunroundseen
+      'BACKROUND:BACKROUND': backroundseen
+      'CONS:CONS': frontunroundcons
+      'I:@': reject
+      'I:0': frontunroundseen  
+      'E:0': frontunroundseen
+      'E:@': reject
+      '+:0': frontunroundseen
+      '@:@': frontunroundseen
+      '#:#': start
+    frontunroundcons:
+      'FRONTUNROUND:FRONTUNROUND': frontunroundseen
+      'FRONTROUND:FRONTROUND': frontroundseen
+      'BACKUNROUND:BACKUNROUND': backunroundseen
+      'BACKROUND:BACKROUND': backroundseen
+      'I:@': reject
+      'I:i': frontunroundseen
+      'E:e': frontunroundseen
+      'E:@': reject
+      '+:0': frontunroundcons 
+      '@:@': frontunroundcons
+      '#:#': start
+    backroundseen:
+      'FRONTUNROUND:FRONTUNROUND': frontunroundseen
+      'FRONTROUND:FRONTROUND': frontroundseen
+      'BACKUNROUND:BACKUNROUND': backunroundseen
+      'BACKROUND:BACKROUND': backroundseen
+      'CONS:CONS': backroundcons 
+      'I:0': backroundseen
+      'I:@': reject
+      'E:0': backroundseen
+      'E:@': reject
+      '+:0': backroundseen
+      '@:@': backroundseen
+      '#:#': start
+    backroundcons:
+      'FRONTUNROUND:FRONTUNROUND': frontunroundseen
+      'FRONTROUND:FRONTROUND': frontroundseen
+      'BACKUNROUND:BACKUNROUND': backunroundseen
+      'BACKROUND:BACKROUND': backroundseen 
+      'I:u': backroundseen
+      'I:@': reject
+      'E:a': backunroundseen
+      'E:@': reject
+      '+:0': backroundcons
+      '@:@': backroundcons
+      '#:#': start
+    backunroundseen:
+      'FRONTUNROUND:FRONTUNROUND': frontunroundseen
+      'FRONTROUND:FRONTROUND': frontroundseen
+      'BACKUNROUND:BACKUNROUND': backunroundseen
+      'BACKROUND:BACKROUND': backroundseen
+      'CONS:CONS': backunroundcons
+      'I:0': backunroundseen
+      'I:@': reject
+      'E:0': backunroundseen
+      'E:@': reject
+      '+:0': backunroundseen
+      '@:@': backunroundseen
+      '#:#': start
+    backunroundcons:
+      'FRONTUNROUND:FRONTUNROUND': frontunroundseen
+      'FRONTROUND:FRONTROUND': frontroundseen
+      'BACKUNROUND:BACKUNROUND': backunroundseen
+      'BACKROUND:BACKROUND': backroundseen
+      'I:<i>': backunroundseen
+      'I:@': reject
+      'E:a': backunroundseen
+      'E:@': reject
+      '+:0': backunroundcons
+      '@:@': backunroundcons
+      '#:#': start
+    frontroundseen:
+      'FRONTUNROUND:FRONTUNROUND': frontunroundseen
+      'FRONTROUND:FRONTROUND': frontroundseen
+      'BACKUNROUND:BACKUNROUND': backunroundseen
+      'BACKROUND:BACKROUND': backroundseen 
+      'CONS:CONS': frontroundcons
+      'I:0': frontroundseen
+      'I:@': reject
+      'E:0': frontunroundseen
+      'E:@': reject
+      '+:0': frontroundseen
+      '@:@': frontroundseen
+      '#:#': start
+    frontroundcons:
+      'FRONTUNROUND:FRONTUNROUND': frontunroundseen
+      'FRONTROUND:FRONTROUND': frontroundseen
+      'BACKUNROUND:BACKUNROUND': backunroundseen
+      'BACKROUND:BACKROUND': backroundseen 
+      'I:<u..>': frontroundseen
+      'I:@': reject
+      'E:e': frontunroundseen
+      'E:@': reject
+      '+:0': frontroundcons
+      '@:@': frontroundcons
+      '#:#': start
+  bufferconsonants:
+    start:
+      'VOWEL:VOWEL': vowelseen
+      'CONS:CONS': consseen
+      '@:@': start
+      '#:#': start
+    vowelseen:
+      'VOWEL:VOWEL': vowelseen
+      'CONS:CONS': consseen
+      'Y:y': start
+      'Y:0': reject
+      '+:0': vowelseen
+      '@:@': vowelseen
+      '#:#': start
+    consseen:
+      'VOWEL:VOWEL': vowelseen
+      'CONS:CONS': consseen
+      'Y:0': start
+      'Y:y': reject
+      '+:0': consseen
+      '@:@': consseen
+      '#:#': start
+  consonant harmony:
+    start:
+      'VOICELESS:VOICELESS': sertunsuz
+      'D:d': start
+      'D:t': reject
+      '+:0': start
+      '@:@': start
+      '#:#': start
+    sertunsuz:
+      'VOICELESS:VOICELESS': sertunsuz
+      'CONS:CONS': start
+      'VOWEL:VOWEL': start
+      '+:0': sertunsuz
+      'D:t': start
+      'D:d': reject
+      '@:@': sertunsuz
+      '#:#': start
+  vowel dropping:
+    start:
+      'VOWEL:VOWEL': vowelseen
+      '+:0': start
+      '@:@': start
+      'I:0': reject
+      '#:#': start
+    vowelseen:
+      'VOWEL:VOWEL': vowelseen
+      '+:0': vowelseen
+      'I:0': start
+      'I:@': reject
+      '@:@': start
+      '#:#': start
+  g exception:
+    start:
+      'g:k': maybeaddk
+      'g:g': maybekeepg
+      '@:@': start
+      '#:#': start
+    maybeaddk:
+      '@:@': maybeaddk
+      '#:#': start
+    rejecting maybekeepg:
+      '@:@': start
+      '#:#': reject
+  kitab exception:
+    start:
+      'b:p': maybeaddp
+      'b:b': maybekeepb
+      '@:@': start
+      '#:#': start
+    rejecting maybeaddp:
+       '+:0': maybeaddp
+       'l:l': start
+    maybekeepb:
+       '@:@': start
+       '#:#': reject
+       
+    
+
+
+
+
+
+
+
